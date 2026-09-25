@@ -21,13 +21,14 @@ Swap them for your own if you like. Keep five of them either way: criterion 3
 names a target of "4 of 5", and four of three is not a thing.
 """
 
+
 QUESTIONS = [
     # {"question": "...", "expects": "..."},
-    {"question": "", "expects": ""},
-    {"question": "", "expects": ""},
-    {"question": "", "expects": ""},
-    {"question": "", "expects": ""},
-    {"question": "", "expects": ""},
+    {"question": "How many hours a week outside of class does CS 210 Data Structures require?", "expects": "8 to 10"},
+    {"question": "Do unused dining dollars carry over from the spring semester to the following fall?", "expects": "no"},
+    {"question": "Is the housing lottery for juniors and seniors random?", "expects": "credit hours"},
+    {"question": "What happens on my transcript if I drop a course after week two?", "expects": "W"},
+    {"question": "How is MATH 220 Linear Algebra graded, midterms or a final?", "expects": "cumulative final"},
 ]
 
 # Questions from a different world entirely. Your gate should refuse all five.
