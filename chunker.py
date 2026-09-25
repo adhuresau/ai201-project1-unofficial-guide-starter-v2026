@@ -82,22 +82,42 @@ def fallback_split(
 
 def split_documents(documents: list[Document]) -> list[Chunk]:
     """
-    Split documents into chunks. ⚠️ REPLACE THE BODY OF THIS IN MILESTONE 3.
+    Split each document on paragraph breaks (blank lines), merging a leading
+    title line into the paragraph that follows it.
 
-    Right now it just calls the fallback. That is the plain, generic behaviour
-    the brief is talking about.
-
-    When you write your own strategy, set `produced_by` to
-    "chunker.py::split_documents" so your README's Sample Chunks section names
-    the right function. `app.py chunks` prints that string for you.
-
-    Things worth thinking about before you write any code:
-      - Are your documents short posts or long guides?
-      - Is the useful information in one sentence, or spread over a paragraph?
-      - Would splitting on paragraph breaks keep more thoughts intact than
-        splitting on a character count?
+    campus_life posts are short, single-idea pieces (178–549 characters).
+    A fixed character cutoff barely does anything on them by coincidence —
+    almost none reach 800 characters. This version splits on paragraph
+    breaks instead, since a blank line is a real signal that one thought
+    ended and another began. The one adjustment: nearly every post opens
+    with a title line ("On the add/drop deadline") with no terminal
+    punctuation. Left alone, that line becomes its own chunk containing
+    nothing answerable — a fragment, not a thought. Merging it into the
+    paragraph that follows keeps every chunk self-contained.
     """
-    return fallback_split(documents)
+    chunks: list[Chunk] = []
+    for doc in documents:
+        paragraphs = [p.strip() for p in doc.text.split("\n\n") if p.strip()]
+
+        merged: list[str] = []
+        for paragraph in paragraphs:
+            if merged and not merged[-1].endswith((".", "!", "?")):
+                merged[-1] = merged[-1] + " " + paragraph
+            else:
+                merged.append(paragraph)
+
+        for index, paragraph in enumerate(merged):
+            chunks.append(
+                Chunk(
+                    text=paragraph,
+                    source=doc.source,
+                    index=index,
+                    produced_by="chunker.py::split_documents",
+                )
+            )
+
+    return chunks
+
 
 
 def describe(chunks: list[Chunk]) -> str:
